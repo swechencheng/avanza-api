@@ -208,6 +208,17 @@ class ReturnModelTest(unittest.TestCase):
         except ValidationError as e:
             self.fail(e)
 
+    def test_get_market_data(self):
+        market_data = get_or_cache(
+            self.avanza.get_market_data,
+            ["5361"],  # Avanza Bank Holding
+        )
+
+        try:
+            MarketData.model_validate(market_data, strict=True)
+        except ValidationError as e:
+            self.fail(e)
+
     def test_get_offers(self):
         offers = get_or_cache(self.avanza.get_offers)
 
@@ -238,7 +249,7 @@ class ReturnModelTest(unittest.TestCase):
         for time_period in InsightsReportTimePeriod:
             with self.subTest(time_period=time_period):
                 insights_report = get_or_cache(
-                    self.avanza.get_insights_report, [account_id, time_period]
+                    self.avanza.get_insights_report, [[account_id], time_period]
                 )
 
                 try:

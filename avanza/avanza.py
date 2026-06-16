@@ -446,13 +446,21 @@ class Avanza:
             Route.ORDERBOOK_PATH.value.format(order_book_id)
         )
 
+    def get_market_data(self, order_book_id: str)-> MarketData:
+        """Marketdata includes current order depth and quote."""
+        return self.__call(
+            HttpMethod.GET,
+            Route.MARKETDATA_PATH.value.format(order_book_id)
+        )
+
     def get_insights_report(
-        self, account_id: str, time_period: InsightsReportTimePeriod
+        self, account_ids: list[str], time_period: InsightsReportTimePeriod
     ) -> InsightsReport:
         """Get report about the development of your owned positions during the specified timeperiod"""
         return self.__call(
-            HttpMethod.GET,
-            Route.INSIGHTS_PATH.value.format(time_period.value, account_id),
+            HttpMethod.POST,
+            Route.INSIGHTS_PATH.value,
+            options={"timePeriod": time_period.value, "accountIds": account_ids},
         )
 
     def get_deals(self):

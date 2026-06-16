@@ -112,4 +112,3 @@ class InsightsReport(BaseModel):
     """ YYYY-MM-DD """
     toDate: str
     """ YYYY-MM-DD """
-    aggregatedPerformance: Union[float, Literal["-"]]
