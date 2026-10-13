@@ -163,6 +163,22 @@ class ReturnModelTest(unittest.TestCase):
         except ValidationError as e:
             self.fail(e)
 
+    def test_warrant_filter(self):
+        warrant_filter = self.avanza.get_warrant_filter(
+            underlying_instruments=["18986"],  # Guld
+            sub_types=["knock_out"],
+            is_avanza_branded=True,
+        )
+
+        self.assertGreater(
+            len(warrant_filter["warrants"]), 0, "expected the filter to match some warrants"
+        )
+
+        try:
+            WarrantFilterResult.model_validate(warrant_filter, strict=True)
+        except ValidationError as e:
+            self.fail(e)
+
     def test_search_for_stock(self):
         stock_search_results = get_or_cache(self.avanza.search_for_stock, ["Ap"])
 
@@ -208,6 +224,17 @@ class ReturnModelTest(unittest.TestCase):
         except ValidationError as e:
             self.fail(e)
 
+    def test_get_insider_transactions(self):
+        insider_transactions = get_or_cache(
+            self.avanza.get_insider_transactions,
+            ["5255"],
+        )
+
+        try:
+            InsiderTransactions.model_validate(insider_transactions, strict=True)
+        except ValidationError as e:
+            self.fail(e)
+            
     def test_get_market_data(self):
         market_data = get_or_cache(
             self.avanza.get_market_data,
